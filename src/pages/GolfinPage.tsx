@@ -40,7 +40,7 @@ export function GolfinPage() {
 
   return (
     <div>
-      <section className="relative py-32 md:py-52 overflow-hidden">
+      <section className="relative py-44 md:py-52 overflow-hidden">
         <img
           src={golfImage}
           alt="Old Fart crew on the golf course"

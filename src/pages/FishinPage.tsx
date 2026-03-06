@@ -40,7 +40,7 @@ export function FishinPage() {
 
   return (
     <div>
-      <section className="relative py-32 md:py-52 overflow-hidden">
+      <section className="relative py-44 md:py-52 overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${fishinImage})` }}
