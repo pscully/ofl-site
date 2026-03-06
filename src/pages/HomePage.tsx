@@ -598,9 +598,9 @@ export function HomePage() {
               />
 
               {/* 1. Podcast Studio */}
-              <a
+              <Link
                 ref={h1Ref}
-                href="/livin"
+                to="/livin"
                 className="absolute flex flex-col items-center hover:scale-110 transition-transform duration-300 cursor-pointer group z-10"
                 style={{
                   left: "72%",
@@ -615,12 +615,12 @@ export function HomePage() {
                 <span className="text-xs lg:text-sm font-bold text-brand-cream-100 bg-brand-maroon-900/95 border border-brand-gold-500/30 px-2.5 py-1.5 lg:px-4 lg:py-2 rounded-full whitespace-nowrap shadow-xl">
                   Podcast Studio
                 </span>
-              </a>
+              </Link>
 
               {/* 2. Pro Shop */}
-              <a
+              <Link
                 ref={h2Ref}
-                href="/shop"
+                to="/shop"
                 className="absolute flex flex-col items-center hover:scale-110 transition-transform duration-300 cursor-pointer group z-10"
                 style={{
                   left: "85%",
@@ -635,12 +635,12 @@ export function HomePage() {
                 <span className="text-xs lg:text-sm font-bold text-brand-cream-100 bg-brand-maroon-900/95 border border-brand-gold-500/30 px-2.5 py-1.5 lg:px-4 lg:py-2 rounded-full whitespace-nowrap shadow-xl">
                   Pro Shop
                 </span>
-              </a>
+              </Link>
 
               {/* 3. Bait Shop */}
-              <a
+              <Link
                 ref={h3Ref}
-                href="/fishin"
+                to="/fishin"
                 className="absolute flex flex-col items-center hover:scale-110 transition-transform duration-300 cursor-pointer group z-10"
                 style={{
                   left: "96%",
@@ -655,12 +655,12 @@ export function HomePage() {
                 <span className="text-xs lg:text-sm font-bold text-brand-cream-100 bg-brand-maroon-900/95 border border-brand-gold-500/30 px-2.5 py-1.5 lg:px-4 lg:py-2 rounded-full whitespace-nowrap shadow-xl">
                   Bait Shop
                 </span>
-              </a>
+              </Link>
 
               {/* 4. Practice Putting Green */}
-              <a
+              <Link
                 ref={h4Ref}
-                href="/golfin"
+                to="/golfin"
                 className="absolute flex flex-col items-center hover:scale-110 transition-transform duration-300 cursor-pointer group z-10"
                 style={{
                   left: "48%",
@@ -675,12 +675,12 @@ export function HomePage() {
                 <span className="text-xs lg:text-sm font-bold text-brand-cream-100 bg-brand-maroon-900/95 border border-brand-gold-500/30 px-2.5 py-1.5 lg:px-4 lg:py-2 rounded-full whitespace-nowrap shadow-xl">
                   Practice Putting Green
                 </span>
-              </a>
+              </Link>
 
               {/* 5. Bar */}
-              <a
+              <Link
                 ref={h5Ref}
-                href="/crew"
+                to="/crew"
                 className="absolute flex flex-col items-center hover:scale-110 transition-transform duration-300 cursor-pointer group z-10"
                 style={{
                   left: "26%",
@@ -695,7 +695,7 @@ export function HomePage() {
                 <span className="text-xs lg:text-sm font-bold text-brand-cream-100 bg-brand-maroon-900/95 border border-brand-gold-500/30 px-2.5 py-1.5 lg:px-4 lg:py-2 rounded-full whitespace-nowrap shadow-xl">
                   The Bar
                 </span>
-              </a>
+              </Link>
             </div>
           </div>
         </div>
