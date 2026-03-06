@@ -261,14 +261,17 @@ export function HomePage() {
     const clipEl = mapClipRef.current;
     if (!dragEl || !clipEl) return;
 
+    // Measure the natural (untranslated) size of the drag element once
+    const naturalWidth = dragEl.offsetWidth;
+    const naturalHeight = dragEl.offsetHeight;
+
     Draggable.create(dragEl, {
       type: "x,y",
       inertia: true,
       bounds: () => {
         const clipRect = clipEl.getBoundingClientRect();
-        const imgRect = dragEl.getBoundingClientRect();
-        const overflowX = imgRect.width - clipRect.width;
-        const overflowY = imgRect.height - clipRect.height;
+        const overflowX = Math.max(0, naturalWidth - clipRect.width);
+        const overflowY = Math.max(0, naturalHeight - clipRect.height);
         return {
           minX: -overflowX / 2,
           maxX: overflowX / 2,
