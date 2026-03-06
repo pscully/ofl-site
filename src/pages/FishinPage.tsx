@@ -40,13 +40,13 @@ export function FishinPage() {
 
   return (
     <div>
-      <section className="relative py-20 md:py-32 overflow-hidden">
+      <section className="relative py-32 md:py-52 overflow-hidden">
         <div
           className="absolute inset-0 bg-cover bg-center bg-no-repeat"
           style={{ backgroundImage: `url(${fishinImage})` }}
         ></div>
-        <div className="absolute inset-0 bg-gradient-to-r from-sky-950/90 via-sky-950/80 to-sky-950/85"></div>
-        <div className="absolute inset-0 bg-gradient-to-b from-sky-950/50 via-transparent to-sky-950/70"></div>
+        <div className="absolute inset-0 bg-brand-maroon-950/80"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_var(--tw-gradient-stops))] from-brand-gold-600/10 via-transparent to-transparent"></div>
 
         <div className="container mx-auto px-6 relative z-10">
           <div className="max-w-4xl mx-auto text-center">

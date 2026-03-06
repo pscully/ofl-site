@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Mic2, Music2 } from 'lucide-react';
+import hostsImage from '../assets/hosts.jpg';
 import { EpisodeCard } from '../components/EpisodeCard';
 import { Button } from '../components/Button';
 import { supabase } from '../lib/supabase';
@@ -38,8 +39,13 @@ export function LivinPage() {
 
   return (
     <div>
-      <section className="relative py-20 md:py-32 overflow-hidden">
-        <div className="absolute inset-0 brand-gradient"></div>
+      <section className="relative py-32 md:py-52 overflow-hidden">
+        <img
+          src={hostsImage}
+          alt="Old Fart Podcast hosts"
+          className="absolute inset-0 w-full h-full object-cover object-top"
+        />
+        <div className="absolute inset-0 bg-brand-maroon-950/75"></div>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_var(--tw-gradient-stops))] from-brand-gold-600/10 via-transparent to-transparent"></div>
 
         <div className="container mx-auto px-6 relative z-10">

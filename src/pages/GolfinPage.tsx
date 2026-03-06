@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Wifi, Youtube } from 'lucide-react';
+import golfImage from '../assets/golf.jpg';
 import { VideoCard } from '../components/VideoCard';
 import { Button } from '../components/Button';
 import { supabase } from '../lib/supabase';
@@ -39,8 +40,13 @@ export function GolfinPage() {
 
   return (
     <div>
-      <section className="relative py-20 md:py-32 overflow-hidden">
-        <div className="absolute inset-0 brand-gradient"></div>
+      <section className="relative py-32 md:py-52 overflow-hidden">
+        <img
+          src={golfImage}
+          alt="Old Fart crew on the golf course"
+          className="absolute inset-0 w-full h-full object-cover object-top"
+        />
+        <div className="absolute inset-0 bg-brand-maroon-950/75"></div>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-brand-gold-600/10 via-transparent to-transparent"></div>
 
         <div className="container mx-auto px-6 relative z-10">

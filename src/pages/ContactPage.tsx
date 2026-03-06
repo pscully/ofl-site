@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { Mail, MessageSquare, Briefcase } from 'lucide-react';
+import scorecardImage from '../assets/scorecard.jpg';
 import { Button } from '../components/Button';
 
 export function ContactPage() {
@@ -31,8 +32,13 @@ export function ContactPage() {
 
   return (
     <div>
-      <section className="relative py-20 md:py-32 overflow-hidden">
-        <div className="absolute inset-0 brand-gradient"></div>
+      <section className="relative py-32 md:py-52 overflow-hidden">
+        <img
+          src={scorecardImage}
+          alt="Golf scorecard"
+          className="absolute inset-0 w-full h-full object-cover object-top"
+        />
+        <div className="absolute inset-0 bg-brand-maroon-950/75"></div>
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-brand-gold-600/10 via-transparent to-transparent"></div>
 
         <div className="container mx-auto px-6 relative z-10">
