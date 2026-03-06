@@ -83,7 +83,7 @@ export function Header() {
           <Link to="/" className="flex items-center gap-3 group">
             <Mic2 className="w-8 h-8 text-brand-gold-500 group-hover:text-brand-gold-400 transition-colors" />
             <span className="text-2xl font-serif font-bold text-brand-cream-100 group-hover:text-brand-gold-400 transition-colors">
-              Old Fart
+              Old Fart Livin'
             </span>
           </Link>
 
