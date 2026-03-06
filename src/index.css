@@ -1,0 +1,80 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html.lenis,
+  html.lenis body {
+    height: auto;
+  }
+
+  html.lenis.lenis-smooth {
+    scroll-behavior: auto !important;
+  }
+
+  html.lenis.lenis-smooth [data-lenis-prevent] {
+    overscroll-behavior: contain;
+  }
+
+  html.lenis.lenis-stopped {
+    overflow: hidden;
+  }
+
+  html.lenis.lenis-smooth iframe {
+    pointer-events: none;
+  }
+
+  body {
+    @apply antialiased bg-brand-maroon-950 text-brand-cream-100;
+  }
+}
+
+@layer utilities {
+  .text-shadow-glow {
+    text-shadow: 0 0 20px rgba(212, 181, 150, 0.3);
+  }
+
+  .brand-gradient {
+    background: linear-gradient(135deg, #2a0a0a 0%, #3d1010 50%, #2b1810 100%);
+  }
+
+  .brand-card {
+    background: linear-gradient(135deg, #3d1010 0%, #2b1810 100%);
+    border: 1px solid rgba(212, 181, 150, 0.2);
+  }
+
+  .clip-reveal {
+    clip-path: inset(100% 0 0 0);
+  }
+
+  .image-reveal {
+    overflow: hidden;
+  }
+
+  .image-reveal img {
+    transform: scale(1.2);
+  }
+
+  .gpu-accelerated {
+    will-change: transform, opacity;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .gpu-accelerated-clip {
+    will-change: clip-path;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+
+  .scroll-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #d4b596, #8b7355);
+    transform-origin: 0%;
+    z-index: 9999;
+  }
+}
