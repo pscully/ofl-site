@@ -1,14 +1,23 @@
-import { ShoppingBag, ArrowRight, Mail } from 'lucide-react';
+import { ShoppingBag, ArrowRight, Mail, Mic, ShoppingCart, Fish, Flag, Beer } from 'lucide-react';
 import { Button } from '../components/Button';
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { useGSAP } from '@gsap/react';
 import gsap from 'gsap';
+import { Draggable } from 'gsap/Draggable';
 import heroVideo from '../assets/hero-video.mp4';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import mapImage from '../assets/map.webp';
 
-gsap.registerPlugin(ScrollTrigger);
+gsap.registerPlugin(ScrollTrigger, Draggable);
+
+const MAP_DESTINATIONS = [
+  { label: 'Podcast Studio', href: '/livin', icon: Mic, color: 'bg-brand-gold-500/20', iconColor: 'text-brand-gold-400' },
+  { label: 'Pro Shop', href: '/shop', icon: ShoppingCart, color: 'bg-brand-gold-500/20', iconColor: 'text-brand-gold-400' },
+  { label: 'Bait Shop', href: '/fishin', icon: Fish, color: 'bg-sky-500/20', iconColor: 'text-sky-400' },
+  { label: 'Practice Putting Green', href: '/golfin', icon: Flag, color: 'bg-emerald-500/20', iconColor: 'text-emerald-400' },
+  { label: 'The Bar', href: '/crew', icon: Beer, color: 'bg-amber-500/20', iconColor: 'text-amber-400' },
+] as const;
 
 export function HomePage() {
   const [email, setEmail] = useState('');
@@ -38,6 +47,16 @@ export function HomePage() {
   const merchSectionRef = useRef<HTMLElement>(null);
 
   const newsletterRef = useRef<HTMLElement>(null);
+
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)');
+    setIsMobile(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
 
   // Hero entrance animations
   useGSAP(() => {
@@ -99,8 +118,9 @@ export function HomePage() {
     });
   }, []);
 
-  // New Map Scroll Animation
+  // New Map Scroll Animation (desktop/tablet only)
   useGSAP(() => {
+    if (isMobile) return;
     if (!mapIntroRef.current || !mapPinRef.current || !mapClipRef.current) return;
 
     // 1. Arrow extending down (curved path draw effect)
@@ -112,7 +132,7 @@ export function HomePage() {
         scrollTrigger: {
           trigger: mapIntroRef.current,
           start: 'top 75%',
-          end: 'bottom 35%', // End slightly earlier so the tip finishes before the map
+          end: 'bottom 35%',
           scrub: true,
         }
       }
@@ -126,7 +146,7 @@ export function HomePage() {
       scrollTrigger: {
         trigger: mapPinRef.current,
         start: 'top top',
-        end: '+=400%', // Lots of scroll room for sequence
+        end: '+=400%',
         pin: true,
         scrub: 0.5,
       },
@@ -161,9 +181,41 @@ export function HomePage() {
     });
 
     // Add a trailing pause so user stays in the map briefly before next section
-    // Extended from 0.5 to 2.0 to give ample time on "The Bar" before unpinning
     tl.to({}, { duration: 2.0 });
-  }, []);
+  }, [isMobile]);
+
+  // Drag-to-pan on tablet-sized screens
+  useGSAP(() => {
+    if (isMobile || !mapImageRef.current || !mapClipRef.current) return;
+    const isTablet = window.matchMedia('(max-width: 1024px)').matches;
+    if (!isTablet) return;
+
+    // Wait for the scroll animation to finish setting up, then enable drag
+    ScrollTrigger.addEventListener('refresh', () => {
+      const imgEl = mapImageRef.current;
+      const clipEl = mapClipRef.current;
+      if (!imgEl || !clipEl) return;
+
+      Draggable.create(imgEl, {
+        type: 'x,y',
+        inertia: true,
+        bounds: () => {
+          const clipRect = clipEl.getBoundingClientRect();
+          const imgRect = imgEl.getBoundingClientRect();
+          const overflowX = imgRect.width - clipRect.width;
+          const overflowY = imgRect.height - clipRect.height;
+          return {
+            minX: -overflowX / 2,
+            maxX: overflowX / 2,
+            minY: -overflowY / 2,
+            maxY: overflowY / 2,
+          };
+        },
+        cursor: 'grab',
+        activeCursor: 'grabbing',
+      });
+    });
+  }, [isMobile]);
 
   // Merch section entrance animation
   useGSAP(() => {
@@ -335,12 +387,12 @@ export function HomePage() {
 
       {/* Intro to Map */}
       <section ref={mapIntroRef} className="pt-24 bg-brand-maroon-950 flex flex-col items-center justify-center relative z-10" id="map">
-        <h2 ref={mapTextRef} className="text-4xl md:text-6xl font-serif font-bold text-center text-brand-cream-100">
+        <h2 ref={mapTextRef} className="text-4xl md:text-6xl font-serif font-bold text-center text-brand-cream-100 px-6">
           Explore The Old Fart World
         </h2>
 
-        {/* Beautiful curved SVG dashed S-arrow */}
-        <div ref={mapArrowRef} className="mt-12 mb-6 h-64 flex justify-center w-full relative z-10">
+        {/* Beautiful curved SVG dashed S-arrow (hidden on mobile) */}
+        <div ref={mapArrowRef} className="hidden md:flex mt-12 mb-6 h-64 justify-center w-full relative z-10">
           <svg
             viewBox="0 0 100 200"
             className="w-32 h-full text-brand-gold-500 overflow-visible drop-shadow-[0_0_8px_rgba(212,181,150,0.5)]"
@@ -354,7 +406,6 @@ export function HomePage() {
               d="M 50,0 C 120,30 120,60 50,90 C -20,120 50,140 50,165"
               strokeDasharray="6 8"
             />
-            {/* Solid tail stem guarantees perfect intersection with the arrowhead */}
             <path
               d="M 50,165 L 50,190 M 35,175 L 50,190 L 65,175"
             />
@@ -362,119 +413,157 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* Pinned Map Sequence */}
-      <section ref={mapPinRef} className="relative h-screen bg-brand-maroon-950 overflow-hidden flex items-center justify-center pb-12">
-        <div
-          ref={mapClipRef}
-          /* Set inset-0 so the map wrapper stretches exactly to the screen edges, fully hiding the maroon container beneath */
-          className="absolute inset-x-0 inset-y-8 w-full h-[calc(100%-4rem)] will-change-transform z-0 flex items-center justify-center overflow-hidden"
-          style={{
-            '--clip-inset': '15%',
-            '--clip-radius': '32px',
-            clipPath: 'inset(var(--clip-inset) var(--clip-inset) var(--clip-inset) var(--clip-inset) round var(--clip-radius))'
-          } as React.CSSProperties}
-        >
-          {/* This wrapper mathematically mimics object-cover to completely eliminate letterboxing, but holds exact coordinates. 
-              Using top 45% (instead of 50%) keeps the top buildings (Pro Shop, Podcast) safely in the frame even when the bottom overflows. */}
-          <div
-            ref={mapImageRef}
-            className="absolute will-change-transform flex-shrink-0"
-            style={{
-              width: 'max(100vw, calc(100vh * 2200/1475))',
-              height: 'max(100vh, calc(100vw * 1475/2200))',
-              left: '50%',
-              top: '45%',
-              transform: 'translate(-50%, -45%)'
-            }}
-          >
+      {/* Mobile Map Section - card-based destination list */}
+      {isMobile && (
+        <section className="bg-brand-maroon-950 px-6 pt-8 pb-16">
+          <div className="relative rounded-2xl overflow-hidden mb-8">
             <img
               src={mapImage}
               alt="Old Fart World Map"
-              className="absolute inset-0 w-full h-full object-contain"
+              className="w-full h-auto"
             />
-
-            {/* 1. Podcast Studio */}
-            <a
-              ref={h1Ref}
-              href="/livin"
-              className="absolute flex flex-col items-center hover:scale-110 transition-transform duration-300 cursor-pointer group z-10"
-              style={{ left: '72%', top: '15%', transform: 'translate(-50%, -50%)' }}
-            >
-              <div className="relative w-8 h-8 rounded-full mb-2 bg-brand-maroon-500 shadow-[0_0_15px_rgba(159,18,57,0.6)] border-2 border-brand-cream-100 flex items-center justify-center">
-                <div className="absolute inset-0 bg-brand-maroon-400 rounded-full animate-ping opacity-75"></div>
-                <div className="w-2 h-2 bg-brand-cream-100 rounded-full"></div>
-              </div>
-              <span className="text-sm font-bold text-brand-cream-100 bg-brand-maroon-900/95 border border-brand-gold-500/30 px-4 py-2 rounded-full whitespace-nowrap shadow-xl">
-                Podcast Studio
-              </span>
-            </a>
-
-            {/* 2. Pro Shop */}
-            <a
-              ref={h2Ref}
-              href="/shop"
-              className="absolute flex flex-col items-center hover:scale-110 transition-transform duration-300 cursor-pointer group z-10"
-              style={{ left: '85%', top: '15%', transform: 'translate(-50%, -50%)' }}
-            >
-              <div className="relative w-8 h-8 rounded-full mb-2 bg-brand-maroon-500 shadow-[0_0_15px_rgba(159,18,57,0.6)] border-2 border-brand-cream-100 flex items-center justify-center">
-                <div className="absolute inset-0 bg-brand-maroon-400 rounded-full animate-ping opacity-75"></div>
-                <div className="w-2 h-2 bg-brand-cream-100 rounded-full"></div>
-              </div>
-              <span className="text-sm font-bold text-brand-cream-100 bg-brand-maroon-900/95 border border-brand-gold-500/30 px-4 py-2 rounded-full whitespace-nowrap shadow-xl">
-                Pro Shop
-              </span>
-            </a>
-
-            {/* 3. Bait Shop */}
-            <a
-              ref={h3Ref}
-              href="/fishin"
-              className="absolute flex flex-col items-center hover:scale-110 transition-transform duration-300 cursor-pointer group z-10"
-              style={{ left: '96%', top: '48%', transform: 'translate(-50%, -50%)' }}
-            >
-              <div className="relative w-8 h-8 rounded-full mb-2 bg-brand-maroon-500 shadow-[0_0_15px_rgba(159,18,57,0.6)] border-2 border-brand-cream-100 flex items-center justify-center">
-                <div className="absolute inset-0 bg-brand-maroon-400 rounded-full animate-ping opacity-75"></div>
-                <div className="w-2 h-2 bg-brand-cream-100 rounded-full"></div>
-              </div>
-              <span className="text-sm font-bold text-brand-cream-100 bg-brand-maroon-900/95 border border-brand-gold-500/30 px-4 py-2 rounded-full whitespace-nowrap shadow-xl">
-                Bait Shop
-              </span>
-            </a>
-
-            {/* 4. Practice Putting Green */}
-            <a
-              ref={h4Ref}
-              href="/golfin"
-              className="absolute flex flex-col items-center hover:scale-110 transition-transform duration-300 cursor-pointer group z-10"
-              style={{ left: '48%', top: '42%', transform: 'translate(-50%, -50%)' }}
-            >
-              <div className="relative w-8 h-8 rounded-full mb-2 bg-brand-maroon-500 shadow-[0_0_15px_rgba(159,18,57,0.6)] border-2 border-brand-cream-100 flex items-center justify-center">
-                <div className="absolute inset-0 bg-brand-maroon-400 rounded-full animate-ping opacity-75"></div>
-                <div className="w-2 h-2 bg-brand-cream-100 rounded-full"></div>
-              </div>
-              <span className="text-sm font-bold text-brand-cream-100 bg-brand-maroon-900/95 border border-brand-gold-500/30 px-4 py-2 rounded-full whitespace-nowrap shadow-xl">
-                Practice Putting Green
-              </span>
-            </a>
-
-            {/* 5. Bar */}
-            <a
-              ref={h5Ref}
-              href="/crew"
-              className="absolute flex flex-col items-center hover:scale-110 transition-transform duration-300 cursor-pointer group z-10"
-              style={{ left: '26%', top: '65%', transform: 'translate(-50%, -50%)' }}
-            >
-              <div className="relative w-8 h-8 rounded-full mb-2 bg-brand-maroon-500 shadow-[0_0_15px_rgba(159,18,57,0.6)] border-2 border-brand-cream-100 flex items-center justify-center">
-                <div className="absolute inset-0 bg-brand-maroon-400 rounded-full animate-ping opacity-75"></div>
-                <div className="w-2 h-2 bg-brand-cream-100 rounded-full"></div>
-              </div>
-              <span className="text-sm font-bold text-brand-cream-100 bg-brand-maroon-900/95 border border-brand-gold-500/30 px-4 py-2 rounded-full whitespace-nowrap shadow-xl">
-                The Bar
-              </span>
-            </a>
+            <div className="absolute inset-0 bg-gradient-to-t from-brand-maroon-950/80 via-transparent to-transparent" />
           </div>
-        </div>
-      </section>
+
+          <div className="space-y-3 max-w-sm mx-auto">
+            {MAP_DESTINATIONS.map((dest) => (
+              <a
+                key={dest.href}
+                href={dest.href}
+                className="flex items-center gap-4 bg-brand-maroon-800/60 border border-brand-cream-400/10 rounded-xl px-5 py-4 hover:border-brand-gold-500/40 transition-colors group"
+              >
+                <div className={`w-10 h-10 ${dest.color} rounded-full flex items-center justify-center flex-shrink-0`}>
+                  <dest.icon className={`w-5 h-5 ${dest.iconColor}`} />
+                </div>
+                <span className="text-brand-cream-100 font-serif font-bold text-lg group-hover:text-brand-gold-400 transition-colors">
+                  {dest.label}
+                </span>
+                <ArrowRight className="w-4 h-4 text-brand-cream-400 ml-auto group-hover:text-brand-gold-400 group-hover:translate-x-1 transition-all" />
+              </a>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* Pinned Map Sequence (tablet/desktop only) */}
+      {!isMobile && (
+        <section ref={mapPinRef} className="relative h-screen bg-brand-maroon-950 overflow-hidden flex items-center justify-center pb-12">
+          <div
+            ref={mapClipRef}
+            className="absolute inset-x-0 inset-y-8 w-full h-[calc(100%-4rem)] will-change-transform z-0 flex items-center justify-center overflow-hidden"
+            style={{
+              '--clip-inset': window.innerWidth < 1024 ? '8%' : '15%',
+              '--clip-radius': '32px',
+              clipPath: 'inset(var(--clip-inset) var(--clip-inset) var(--clip-inset) var(--clip-inset) round var(--clip-radius))'
+            } as React.CSSProperties}
+          >
+            <div
+              ref={mapImageRef}
+              className="absolute will-change-transform flex-shrink-0"
+              style={{
+                width: 'max(100vw, calc(100vh * 2200/1475))',
+                height: 'max(100vh, calc(100vw * 1475/2200))',
+                left: '50%',
+                top: '45%',
+                transform: 'translate(-50%, -45%)'
+              }}
+            >
+              <img
+                src={mapImage}
+                alt="Old Fart World Map"
+                className="absolute inset-0 w-full h-full object-contain"
+              />
+
+              {/* 1. Podcast Studio */}
+              <a
+                ref={h1Ref}
+                href="/livin"
+                className="absolute flex flex-col items-center hover:scale-110 transition-transform duration-300 cursor-pointer group z-10"
+                style={{ left: '72%', top: '15%', transform: 'translate(-50%, -50%)' }}
+              >
+                <div className="relative w-6 h-6 lg:w-8 lg:h-8 rounded-full mb-1 lg:mb-2 bg-brand-maroon-500 shadow-[0_0_15px_rgba(159,18,57,0.6)] border-2 border-brand-cream-100 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-brand-maroon-400 rounded-full animate-ping opacity-75"></div>
+                  <div className="w-1.5 h-1.5 lg:w-2 lg:h-2 bg-brand-cream-100 rounded-full"></div>
+                </div>
+                <span className="text-xs lg:text-sm font-bold text-brand-cream-100 bg-brand-maroon-900/95 border border-brand-gold-500/30 px-2.5 py-1.5 lg:px-4 lg:py-2 rounded-full whitespace-nowrap shadow-xl">
+                  Podcast Studio
+                </span>
+              </a>
+
+              {/* 2. Pro Shop */}
+              <a
+                ref={h2Ref}
+                href="/shop"
+                className="absolute flex flex-col items-center hover:scale-110 transition-transform duration-300 cursor-pointer group z-10"
+                style={{ left: '85%', top: '15%', transform: 'translate(-50%, -50%)' }}
+              >
+                <div className="relative w-6 h-6 lg:w-8 lg:h-8 rounded-full mb-1 lg:mb-2 bg-brand-maroon-500 shadow-[0_0_15px_rgba(159,18,57,0.6)] border-2 border-brand-cream-100 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-brand-maroon-400 rounded-full animate-ping opacity-75"></div>
+                  <div className="w-1.5 h-1.5 lg:w-2 lg:h-2 bg-brand-cream-100 rounded-full"></div>
+                </div>
+                <span className="text-xs lg:text-sm font-bold text-brand-cream-100 bg-brand-maroon-900/95 border border-brand-gold-500/30 px-2.5 py-1.5 lg:px-4 lg:py-2 rounded-full whitespace-nowrap shadow-xl">
+                  Pro Shop
+                </span>
+              </a>
+
+              {/* 3. Bait Shop */}
+              <a
+                ref={h3Ref}
+                href="/fishin"
+                className="absolute flex flex-col items-center hover:scale-110 transition-transform duration-300 cursor-pointer group z-10"
+                style={{ left: '96%', top: '48%', transform: 'translate(-50%, -50%)' }}
+              >
+                <div className="relative w-6 h-6 lg:w-8 lg:h-8 rounded-full mb-1 lg:mb-2 bg-brand-maroon-500 shadow-[0_0_15px_rgba(159,18,57,0.6)] border-2 border-brand-cream-100 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-brand-maroon-400 rounded-full animate-ping opacity-75"></div>
+                  <div className="w-1.5 h-1.5 lg:w-2 lg:h-2 bg-brand-cream-100 rounded-full"></div>
+                </div>
+                <span className="text-xs lg:text-sm font-bold text-brand-cream-100 bg-brand-maroon-900/95 border border-brand-gold-500/30 px-2.5 py-1.5 lg:px-4 lg:py-2 rounded-full whitespace-nowrap shadow-xl">
+                  Bait Shop
+                </span>
+              </a>
+
+              {/* 4. Practice Putting Green */}
+              <a
+                ref={h4Ref}
+                href="/golfin"
+                className="absolute flex flex-col items-center hover:scale-110 transition-transform duration-300 cursor-pointer group z-10"
+                style={{ left: '48%', top: '42%', transform: 'translate(-50%, -50%)' }}
+              >
+                <div className="relative w-6 h-6 lg:w-8 lg:h-8 rounded-full mb-1 lg:mb-2 bg-brand-maroon-500 shadow-[0_0_15px_rgba(159,18,57,0.6)] border-2 border-brand-cream-100 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-brand-maroon-400 rounded-full animate-ping opacity-75"></div>
+                  <div className="w-1.5 h-1.5 lg:w-2 lg:h-2 bg-brand-cream-100 rounded-full"></div>
+                </div>
+                <span className="text-xs lg:text-sm font-bold text-brand-cream-100 bg-brand-maroon-900/95 border border-brand-gold-500/30 px-2.5 py-1.5 lg:px-4 lg:py-2 rounded-full whitespace-nowrap shadow-xl">
+                  Practice Putting Green
+                </span>
+              </a>
+
+              {/* 5. Bar */}
+              <a
+                ref={h5Ref}
+                href="/crew"
+                className="absolute flex flex-col items-center hover:scale-110 transition-transform duration-300 cursor-pointer group z-10"
+                style={{ left: '26%', top: '65%', transform: 'translate(-50%, -50%)' }}
+              >
+                <div className="relative w-6 h-6 lg:w-8 lg:h-8 rounded-full mb-1 lg:mb-2 bg-brand-maroon-500 shadow-[0_0_15px_rgba(159,18,57,0.6)] border-2 border-brand-cream-100 flex items-center justify-center">
+                  <div className="absolute inset-0 bg-brand-maroon-400 rounded-full animate-ping opacity-75"></div>
+                  <div className="w-1.5 h-1.5 lg:w-2 lg:h-2 bg-brand-cream-100 rounded-full"></div>
+                </div>
+                <span className="text-xs lg:text-sm font-bold text-brand-cream-100 bg-brand-maroon-900/95 border border-brand-gold-500/30 px-2.5 py-1.5 lg:px-4 lg:py-2 rounded-full whitespace-nowrap shadow-xl">
+                  The Bar
+                </span>
+              </a>
+            </div>
+          </div>
+
+          {/* Drag hint for tablet */}
+          <div className="absolute bottom-6 left-1/2 -translate-x-1/2 z-20 lg:hidden pointer-events-none">
+            <span className="text-xs text-brand-cream-300/60 bg-brand-maroon-900/80 px-3 py-1.5 rounded-full backdrop-blur-sm">
+              Drag to explore the map
+            </span>
+          </div>
+        </section>
+      )}
 
       {/* Merch */}
       <section ref={merchSectionRef} className="relative py-32 bg-brand-maroon-900/50">
@@ -537,7 +626,7 @@ export function HomePage() {
               </h2>
 
               <p className="text-lg md:text-xl text-brand-cream-300 mb-8">
-                Get notified when new episodes drop and be the first to know about merch drops and events.
+                Get notified when new conversations drop and be the first to know about merch drops and events.
               </p>
 
               <form

@@ -70,7 +70,7 @@ export function LivinPage() {
             </div>
 
             <p className="text-brand-cream-400 text-sm">
-              New episodes every Tuesday
+              New conversations every Tuesday
             </p>
           </div>
         </div>
@@ -80,17 +80,17 @@ export function LivinPage() {
         <div className="container mx-auto px-6">
           <div className="flex items-center justify-between mb-12">
             <h2 className="text-3xl md:text-4xl font-serif font-bold text-brand-cream-100">
-              Latest Episodes
+              Latest Conversations
             </h2>
           </div>
 
           {loading ? (
             <div className="text-center text-brand-cream-300 py-20">
-              Loading episodes...
+              Loading conversations...
             </div>
           ) : error ? (
             <div className="text-center py-20">
-              <p className="text-red-400 mb-4">Failed to load episodes.</p>
+              <p className="text-red-400 mb-4">Failed to load conversations.</p>
               <button onClick={fetchEpisodes} className="text-brand-gold-400 hover:text-brand-gold-300 underline">
                 Try again
               </button>
@@ -98,7 +98,7 @@ export function LivinPage() {
           ) : episodes.length === 0 ? (
             <div className="text-center py-20">
               <p className="text-brand-cream-300 mb-6">
-                No episodes yet. Check back soon!
+                No conversations yet. Check back soon!
               </p>
             </div>
           ) : (

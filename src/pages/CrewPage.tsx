@@ -5,31 +5,31 @@ export function CrewPage() {
     {
       name: 'Mercer',
       role: 'The Talker',
-      bio: 'Die-hard sports fan and fantasy football wizard. Mike brings the heat with NFL takes, fantasy insights, and the occasional hot take that gets the whole crew fired up.',
+      bio: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.',
       icon: Mic2,
     },
     {
       name: 'Luckadoo',
       role: 'The Instigator',
-      bio: 'Low handicap golfer and course connoisseur. Dave shares his love for the game with honest reviews, swing tips, and stories from some of the best courses around.',
+      bio: 'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident.',
       icon: Wifi,
     },
     {
       name: 'Dame',
       role: 'The Fantasy Guru',
-      bio: 'Tournament angler and tackle junkie. Tom takes you on fishing adventures, shares the techniques that work, and tells the tales that make every trip worth it.',
+      bio: 'Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur.',
       icon: Fish,
     },
     {
       name: 'Mcfadden',
       role: 'The Elder',
-      bio: 'Tournament angler and tackle junkie. Tom takes you on fishing adventures, shares the techniques that work, and tells the tales that make every trip worth it.',
+      bio: 'Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt.',
       icon: Fish,
     },
     {
       name: 'Scully',
       role: 'The Brains',
-      bio: 'Tournament angler and tackle junkie. Tom takes you on fishing adventures, shares the techniques that work, and tells the tales that make every trip worth it.',
+      bio: 'Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas.',
       icon: Fish,
     },
   ];
