@@ -8,6 +8,7 @@ import {
   Flag,
   Beer,
 } from "lucide-react";
+import { Link } from "react-router-dom";
 import { Button } from "../components/Button";
 import { useState, useRef } from "react";
 import { supabase } from "../lib/supabase";
@@ -542,9 +543,9 @@ export function HomePage() {
 
         <div className="space-y-3 max-w-sm mx-auto">
           {MAP_DESTINATIONS.map((dest) => (
-            <a
+            <Link
               key={dest.href}
-              href={dest.href}
+              to={dest.href}
               className="flex items-center gap-4 bg-brand-maroon-800/60 border border-brand-cream-400/10 rounded-xl px-5 py-4 hover:border-brand-gold-500/40 transition-colors group"
             >
               <div
@@ -556,7 +557,7 @@ export function HomePage() {
                 {dest.label}
               </span>
               <ArrowRight className="w-4 h-4 text-brand-cream-400 ml-auto group-hover:text-brand-gold-400 group-hover:translate-x-1 transition-all" />
-            </a>
+            </Link>
           ))}
         </div>
       </section>
